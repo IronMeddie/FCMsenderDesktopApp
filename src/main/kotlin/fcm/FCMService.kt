@@ -11,7 +11,7 @@ import java.io.FileInputStream
 
 class FCMService {
 
-    fun initializeFirebase(filePath: String = "service-account-key3.json") {
+    fun initializeFirebase(filePath: String = "service-account-key2.json") {
         try {
             val serviceAccount = FileInputStream(filePath)
 
