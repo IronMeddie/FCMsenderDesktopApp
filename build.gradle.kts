@@ -24,15 +24,15 @@ dependencies {
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     // network
-    val ktor_version="3.0.0"
-    implementation("io.ktor:ktor-client-core:$ktor_version")
-    implementation("io.ktor:ktor-client-cio:$ktor_version")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-    implementation("io.ktor:ktor-serialization-kotlinx-protobuf:$ktor_version")
-    implementation("io.ktor", "ktor-client-core", ktor_version)
-    implementation("io.ktor", "ktor-client-serialization", ktor_version)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+//    val ktor_version="3.0.0"
+//    implementation("io.ktor:ktor-client-core:$ktor_version")
+//    implementation("io.ktor:ktor-client-cio:$ktor_version")
+//    implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
+//    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+//    implementation("io.ktor:ktor-serialization-kotlinx-protobuf:$ktor_version")
+//    implementation("io.ktor", "ktor-client-core", ktor_version)
+//    implementation("io.ktor", "ktor-client-serialization", ktor_version)
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
 
     // fcm API

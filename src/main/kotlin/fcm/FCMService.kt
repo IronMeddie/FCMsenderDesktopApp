@@ -11,7 +11,7 @@ import java.io.FileInputStream
 
 class FCMService {
 
-    fun initializeFirebase(filePath :String = "service-account-key2.json") {
+    fun initializeFirebase(filePath: String = "service-account-key3.json") {
         try {
             val serviceAccount = FileInputStream(filePath)
 
@@ -27,7 +27,7 @@ class FCMService {
         }
     }
 
-    fun sendNotification(deviceToken: String, title: String, body: String): Flow<String> {
+    fun sendNotification(deviceToken: String, title: String, body: String, channelId: String?): Flow<String> {
         return flow {
             try {
                 // Создание сообщения
@@ -39,13 +39,17 @@ class FCMService {
                             .setBody(body)
                             .build()
                     )
-//                .putData("custom_key", "custom_value") // Дополнительные данные
-                    .setAndroidConfig(
-                        AndroidConfig.builder()
-                            .setPriority(AndroidConfig.Priority.HIGH)
-                            .build()
-                    )
-                    .build()
+                    .apply {
+                        if (channelId?.isNotBlank() == true)
+                            setAndroidConfig(
+                                AndroidConfig.builder()
+                                    .setNotification(AndroidNotification.builder()
+                                        .setChannelId(channelId)
+                                        .build())
+                                    .setPriority(AndroidConfig.Priority.HIGH)
+                                    .build())
+
+                    }.build()
 
                 // Отправка сообщения
                 val response = FirebaseMessaging.getInstance().send(message)
@@ -59,25 +63,45 @@ class FCMService {
         }
     }
 
-    // Отправка multicast сообщения (нескольким устройствам)
-    fun sendMulticastNotification(deviceTokens: List<String>, title: String, body: String) {
-        try {
-            val message = MulticastMessage.builder()
-                .addAllTokens(deviceTokens)
-                .setNotification(
-                    Notification.builder()
-                        .setTitle(title)
-                        .setBody(body)
-                        .build()
-                )
-                .build()
 
-            val response = FirebaseMessaging.getInstance().sendMulticast(message)
-            println("Успешно отправлено: ${response.successCount}")
-            println("Ошибок: ${response.failureCount}")
+    fun sendNotificationWithCustomData(
+        deviceToken: String,
+        title: String,
+        body: String,
+        channelId: String?
+    ): Flow<String> {
 
-        } catch (e: FirebaseMessagingException) {
-            e.printStackTrace()
+        return flow {
+            try {
+                val message = Message.builder()
+                    .setToken(deviceToken)
+                    .putData("a", "myMessage")
+                    .putData("d", "https://")
+                    .putData("t", title)
+                    .putData("b", body)
+                    .setAndroidConfig(
+                        AndroidConfig.builder()
+                            .apply {
+                                if (channelId?.isNotEmpty() == true)
+                                    setNotification(
+                                        AndroidNotification.builder()
+                                            .setChannelId(channelId)
+                                            .build()
+
+                                    )
+                            }
+                            .setPriority(AndroidConfig.Priority.HIGH).build()
+                    )
+                    .build()
+
+                val response = FirebaseMessaging.getInstance().send(message)
+                emit("Успешно отправлено: $response")
+
+            } catch (e: FirebaseMessagingException) {
+                e.printStackTrace()
+            }
         }
+
+
     }
 }
