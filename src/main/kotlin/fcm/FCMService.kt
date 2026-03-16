@@ -6,7 +6,10 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.messaging.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.io.FileInputStream
+import kotlin.random.Random
 
 
 class FCMService {
@@ -43,11 +46,14 @@ class FCMService {
                         if (channelId?.isNotBlank() == true)
                             setAndroidConfig(
                                 AndroidConfig.builder()
-                                    .setNotification(AndroidNotification.builder()
-                                        .setChannelId(channelId)
-                                        .build())
+                                    .setNotification(
+                                        AndroidNotification.builder()
+                                            .setChannelId(channelId)
+                                            .build()
+                                    )
                                     .setPriority(AndroidConfig.Priority.HIGH)
-                                    .build())
+                                    .build()
+                            )
 
                     }.build()
 
@@ -68,31 +74,35 @@ class FCMService {
         deviceToken: String,
         title: String,
         body: String,
-        channelId: String?
+        channelId: String?,
+        isSilent: Boolean = false
     ): Flow<String> {
 
         return flow {
             try {
+                val notificationID = Random.nextInt().toString()
+                val collapseID = Random.nextInt().toString()
+
+                val notificationMap: Map<String, String> = mapOf(
+                    "a" to notificationID,
+                    "e" to title,
+                    "b" to if (isSilent) "1" else "0",
+                    "g" to body,
+                    "as" to (channelId ?: "")
+                )
+                val pushMap: Map<String, String> = mapOf(
+                    "b" to "0",
+                    "a" to collapseID,
+                    "d" to Json.encodeToString(notificationMap)
+                )
+
                 val message = Message.builder()
                     .setToken(deviceToken)
-                    .putData("a", "myMessage")
-                    .putData("d", "https://")
-                    .putData("t", title)
-                    .putData("b", body)
-                    .setAndroidConfig(
-                        AndroidConfig.builder()
-                            .apply {
-                                if (channelId?.isNotEmpty() == true)
-                                    setNotification(
-                                        AndroidNotification.builder()
-                                            .setChannelId(channelId)
-                                            .build()
-
-                                    )
-                            }
-                            .setPriority(AndroidConfig.Priority.HIGH).build()
+                    .putData(
+                        "yamp", Json.encodeToString(pushMap)
                     )
                     .build()
+
 
                 val response = FirebaseMessaging.getInstance().send(message)
                 emit("Успешно отправлено: $response")

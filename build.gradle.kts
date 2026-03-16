@@ -41,6 +41,10 @@ dependencies {
     implementation("com.google.cloud:google-cloud-storage")
     implementation("com.google.firebase:firebase-admin:9.2.0")
     implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
+
+
+    // json
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }
 
 compose.desktop {
