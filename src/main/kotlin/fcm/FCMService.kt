@@ -59,11 +59,11 @@ class FCMService {
 
                 // Отправка сообщения
                 val response = FirebaseMessaging.getInstance().send(message)
-                emit("Успешно отправлено: $response")
+                emit("Успешно отправлено на токен $deviceToken. \nПолучен ответ: $response")
 
             } catch (e: FirebaseMessagingException) {
 
-                emit(e.httpResponse.content)
+                emit("ошибка отправки на токен $deviceToken\n Ответ: " + e.httpResponse.content)
                 e.printStackTrace()
             }
         }
@@ -105,13 +105,12 @@ class FCMService {
 
 
                 val response = FirebaseMessaging.getInstance().send(message)
-                emit("Успешно отправлено: $response")
+                emit("Успешно отправлен пуш c кастом data. \nПолучен ответ: $response")
 
             } catch (e: FirebaseMessagingException) {
+                emit("ошибка отправки пуша c кастом data на токен $deviceToken\n Ответ: " + e.httpResponse.content)
                 e.printStackTrace()
             }
         }
-
-
     }
 }
