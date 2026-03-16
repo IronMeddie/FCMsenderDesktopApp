@@ -91,7 +91,7 @@ class FCMService {
                     "as" to (channelId ?: "")
                 )
                 val pushMap: Map<String, String> = mapOf(
-                    "b" to "0",
+                    "b" to "false",
                     "a" to collapseID,
                     "d" to Json.encodeToString(notificationMap)
                 )
